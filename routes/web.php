@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\NewsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,18 +16,26 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('newsPortal');
 });
 
-Route::get('/hello/{name}', static function (string $name): string {
-    return "Hello, {$name}";
+Route::group(['prefix' => ''], static function() {
+    Route::get('/news', [NewsController::class, 'index'])
+        ->name('news');
+
+    Route::get('/news/{news_id}/show', [NewsController::class, 'show'])
+        ->where('news_id', '\d+')
+        ->name('news.show');
 });
 
-Route::get('/news', static function (): string {
-    return "Below you will find news on completely different topics.";
-});
+Route::group(['prefix' => ''], static function() {
+    Route::get('/categories', [CategoriesController::class, 'index'])
+        ->name('categories');
 
-Route::get('/news/{id}', static function (string $id) {
-    return "News with #ID {$id}: 'Kevin Feige On Why Ant-Man And The Wasp: Quantumania Is The Start Of The MCU’s Phase 5 – Exclusive.'";
-});
+    Route::get('/categories/{category_id}/show', [CategoriesController::class, 'show'])
+        ->where('category_id', '\d+')
+        ->name('categories.show');
 
+    Route::get('/categories/news/', [NewsController::class, 'index'])
+        ->name('news');
+});
