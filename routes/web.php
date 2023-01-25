@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\IndexController as AdminController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\NewsController;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,12 @@ Route::get('/', function () {
     return view('newsPortal');
 });
 
+//admin routes
+Route::group(['prefix' => 'admin'], static function() {
+    Route::get('/', AdminController::class)
+        ->name('admin.index');
+});
+
 Route::group(['prefix' => ''], static function() {
     Route::get('/news', [NewsController::class, 'index'])
         ->name('news');
@@ -26,6 +33,9 @@ Route::group(['prefix' => ''], static function() {
     Route::get('/news/{news_id}/show', [NewsController::class, 'show'])
         ->where('news_id', '\d+')
         ->name('news.show');
+
+    Route::get('/categories/news/', [NewsController::class, 'index'])
+        ->name('categories_id');
 });
 
 Route::group(['prefix' => ''], static function() {
@@ -35,7 +45,4 @@ Route::group(['prefix' => ''], static function() {
     Route::get('/categories/{category_id}/show', [CategoriesController::class, 'show'])
         ->where('category_id', '\d+')
         ->name('categories.show');
-
-    Route::get('/categories/news/', [NewsController::class, 'index'])
-        ->name('news');
 });
