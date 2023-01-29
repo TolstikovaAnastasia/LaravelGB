@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Contracts\View\View;
 
-class CategoriesController extends Controller
+class CategoryController extends Controller
 {
     use NewsTrait;
 
