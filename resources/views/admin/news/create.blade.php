@@ -13,12 +13,33 @@
         <form method="post" action="{{ route('admin.news.store') }}">
             @csrf
             <div class="form-group">
+                <label for="category_id">Category</label>
+                <select class="form-control" name="category_id" id="category_id">
+                    <option value="0">--Choose--</option>
+                    @foreach($categories as $category)
+                        <option @if((int) old('category_id') === $category->id) selected @endif value="{{ $category->id }}">{{ $category->title }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="form-group">
                 <label for="title">Title</label>
                 <input type="text" id="title" name="title" value="{{ old('title') }}" class="form-control">
             </div>
             <div class="form-group">
                 <label for="author">Author</label>
                 <input type="text" id="author" name="author" value="{{ old('author') }}" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="status">Status</label>
+                <select class="form-control" name="status" id="status">
+                    @foreach($statuses as $status)
+                        <option @if(old('status') === $status) selected @endif>{{ $status }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="image">Image</label>
+                <input type="file" id="image" name="image" class="form-control">
             </div>
             <div class="form-group">
                 <label for="description">Description</label>

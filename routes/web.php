@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\Admin\DataSourceController as AdminDataSourceController;
+use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 use App\Http\Controllers\Admin\IndexController as AdminController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
+use App\Http\Controllers\Admin\OrderFormController as AdminOrderFormController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\NewsController;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +31,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], static function() {
         ->name('index');
     Route::resource('categories', AdminCategoryController::class);
     Route::resource('news', AdminNewsController::class);
+    Route::resource('feedback', AdminFeedbackController::class);
+    Route::resource('orderForm', AdminOrderFormController::class);
+    Route::resource('dataSource', AdminDataSourceController::class);
 });
 
 Route::group(['prefix' => ''], static function() {
@@ -49,4 +55,10 @@ Route::group(['prefix' => ''], static function() {
     Route::get('/categories/{category_id}/show', [CategoryController::class, 'show'])
         ->where('category_id', '\d+')
         ->name('categories.show');
+});
+
+Route::get('collection', function () {
+    $names = ['Ann', 'Billy', 'Sam', 'Jhon', 'Andy', 'Feeby', 'Edd', 'Jil', 'Jeck', 'Freddy'];
+    $collect = \collect($names);
+    dd($collect->map(fn($item) => strtoupper($item)));
 });

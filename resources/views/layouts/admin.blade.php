@@ -18,10 +18,6 @@
             <div class="row">
                 <x-admin.sidebar></x-admin.sidebar>
                 <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3" style="padding-left: 250px">
-                    <x-admin.feedback></x-admin.feedback>
-                    <br>
-                    <x-admin.order></x-admin.order>
-                    <br>
                     @yield('content')
                 </main>
             </div>
