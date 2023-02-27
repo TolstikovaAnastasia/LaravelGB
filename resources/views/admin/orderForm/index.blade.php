@@ -5,35 +5,39 @@
         <div class="btn-toolbar mb-2 mb-md-0"></div>
     </div>
 
-    <div class="container">
-        @if($errors->any())
-            @foreach($errors->all() as $error)
-                <x-alert type="danger" :message="$error"></x-alert>
-            @endforeach
-        @endif
-        <form method="post" action=" {{ route('admin.orderForm.store') }}">
-            @csrf
-            <div class="form-group">
-                <label for="user">User name</label>
-                <input type="text" id="user" name="user" value="{{ old('user') }}" class="form-control">
-            </div>
-            <br>
-            <div class="form-group">
-                <label for="phone">Phone number</label>
-                <input type="number" id="phone" name="phone" value="{{ old('phone') }}" class="form-control">
-            </div>
-            <br>
-            <div class="form-group">
-                <label for="email">E-mail</label>
-                <input type="text" id="email" name="email" value="{{ old('email') }}" class="form-control">
-            </div>
-            <br>
-            <div class="form-group">
-                <label for="criteria">Criteria of search</label>
-                <input type="text" id="criteria" name="criteria" value="{{ old('criteria') }}" class="form-control">
-            </div>
-            <br>
-            <button type="submit" class="btn btn-success">Save</button>
-        </form>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>#ID</th>
+                <th>User Name</th>
+                <th>Phone number</th>
+                <th>E-mail</th>
+                <th>Criteria of search</th>
+                <th>Date updated</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            @forelse($orderFormList as $orderForm)
+                <tr>
+                    <td>{{ $orderForm->id }}</td>
+                    <td>{{ $orderForm->user }}</td>
+                    <td>{{ $orderForm->phone }}</td>
+                    <td>{{ $orderForm->email }}</td>
+                    <td>{{ $orderForm->criteria }}</td>
+                    <td>{{ $orderForm->created_at }}</td>
+                    <td><a href="{{ route('admin.orderForm.edit', ['orderForm' => $orderForm]) }}">Change</a> &nbsp; <a href="" style="color: red;">Delete</a></td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="7">No entries</td>
+                </tr>
+            @endforelse
+            </tbody>
+        </table>
+
+        {{ $orderFormList->links() }}
     </div>
 @endsection
+

@@ -3,7 +3,7 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
         <h1 class="h2">Sources</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
-
+            <a href="{{ route('admin.dataSource.create') }}">Add source</a>
         </div>
     </div>
 
@@ -19,13 +19,13 @@
             </tr>
             </thead>
             <tbody>
-            @forelse($listDataSource as $dataSource)
+            @forelse($dataSourceList as $dataSource)
                 <tr>
                     <td>{{ $dataSource->id }}</td>
                     <td>{{ $dataSource->source }}</td>
                     <td>{{ $dataSource->url }}</td>
                     <td>{{ $dataSource->created_at }}</td>
-                    <td><a href="">Change</a> &nbsp; <a href="" style="color: red">Delete</a></td>
+                    <td><a href="{{ route('admin.dataSource.edit', ['dataSource' => $dataSource]) }}">Change</a> &nbsp; <a href="" style="color: red">Delete</a></td>
                 </tr>
             @empty
                 <tr>

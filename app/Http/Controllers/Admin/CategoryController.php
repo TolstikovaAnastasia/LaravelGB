@@ -52,9 +52,9 @@ class CategoryController extends Controller
             'title' => 'required'
         ]);
 
-        $categories = new Category($request->except('_token', 'news_id'));
+        $category = new Category($request->except('_token', 'news_id'));
 
-        if ($categories->save()) {
+        if ($category->save()) {
             return \redirect()->route('admin.categories.index')->with('success', 'Category added successfully');
         }
 
@@ -75,14 +75,14 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param Category $categories
+     * @param Category $category
      * @param NewsQueryBuilder $newsQueryBuilder
      * @return View
      */
-    public function edit(Category $categories, NewsQueryBuilder $newsQueryBuilder): View
+    public function edit(Category $category, NewsQueryBuilder $newsQueryBuilder): View
     {
         return \view('admin.categories.edit', [
-            'categories' => $categories,
+            'categories' => $category,
             'news' => $newsQueryBuilder->getAll(),
         ]);
     }
@@ -91,14 +91,14 @@ class CategoryController extends Controller
      * Update the specified resource in storage.
      *
      * @param Request $request
-     * @param Category $categories
+     * @param Category $category
      * @return RedirectResponse
      */
-    public function update(Request $request, Category $categories): RedirectResponse
+    public function update(Request $request, Category $category): RedirectResponse
     {
-        $categories = $categories->fill($request->except('_token', 'news_ids'));
-        if($categories->save()) {
-            $categories->news()->sync((array) $request->input('news_ids'));
+        $category = $category->fill($request->except('_token', 'news_ids'));
+        if($category->save()) {
+            $category->news()->sync((array) $request->input('news_ids'));
             return \redirect()->route('admin.categories.index')->with('success', 'Category updated successfully');
         }
 

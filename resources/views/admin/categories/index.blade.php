@@ -20,14 +20,14 @@
             </tr>
             </thead>
             <tbody>
-            @forelse($categoriesList as $categories)
+            @forelse($categoriesList as $category)
                 <tr>
-                    <td>{{ $categories->id }}</td>
-                    <td>{{ $categories->news->map(fn($item) => $item->title)->implode(",") }}</td>
-                    <td>{{ $categories->title }}</td>
-                    <td>{{ $categories->description }}</td>
-                    <td>{{ $categories->created_at }}</td>
-                    <td><a href="{{ route('admin.categories.edit', ['categories' => $categories]) }}">Change</a> &nbsp; <a href="" style="color: red;">Delete</a></td>
+                    <td>{{ $category->id }}</td>
+                    <td>{{ $category->news->map(fn($item) => $item->title)->implode(",") }}</td>
+                    <td>{{ $category->title }}</td>
+                    <td>{{ $category->description }}</td>
+                    <td>{{ $category->created_at }}</td>
+                    <td><a href="{{ route('admin.categories.edit', ['categories' => $category]) }}">Change</a> &nbsp; <a href="" style="color: red;">Delete</a></td>
                 </tr>
             @empty
                 <tr>

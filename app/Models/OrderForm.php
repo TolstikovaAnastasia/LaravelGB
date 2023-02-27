@@ -11,5 +11,12 @@ class OrderForm extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $table = 'order_forms';
+
+    protected $fillable = [
+        'user',
+        'phone',
+        'email',
+        'criteria',
+    ];
 }

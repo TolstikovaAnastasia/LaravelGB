@@ -10,7 +10,7 @@
                 <x-alert type="danger" :message="$error"></x-alert>
             @endforeach
         @endif
-        <form method="post" action="{{ route('admin.categories.update', ['categories' => $categories]) }}">
+        <form method="post" action="{{ route('admin.categories.update', ['categories' => $category]) }}">
             @csrf
             @method('put')
             <div class="form-group">
@@ -18,17 +18,17 @@
                 <select class="form-control" name="news_ids[]" id="news_ids" multiple>
                     <option value="0">--Choose--</option>
                     @foreach($news as $new)
-                        <option @if(in_array($new->id, $categories->news->pluck('id')->toArray())) selected @endif value="{{ $new->id }}">{{ $new->title }}</option>
+                        <option @if(in_array($new->id, $category->news->pluck('id')->toArray())) selected @endif value="{{ $new->id }}">{{ $new->title }}</option>
                     @endforeach
                 </select>
             </div>
             <div class="form-group">
                 <label for="title">Title</label>
-                <input type="text" id="title" name="title" value="{{ $categories->title }}" class="form-control">
+                <input type="text" id="title" name="title" value="{{ $category->title }}" class="form-control">
             </div>
             <div class="form-group">
                 <label for="description">Description</label>
-                <textarea class="form-control" id="description" name="description">{{ $categories->description }}</textarea>
+                <textarea class="form-control" id="description" name="description">{{ $category->description }}</textarea>
             </div>
             <br>
             <button type="submit" class="btn btn-success">Save</button>

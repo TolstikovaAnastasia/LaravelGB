@@ -11,5 +11,8 @@ class Feedback extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'user',
+        'feedback',
+    ];
 }

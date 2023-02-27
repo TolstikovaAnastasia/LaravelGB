@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\OrderForm;
+use App\QueryBuilders\OrderFormsQueryBuilder;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,11 +16,14 @@ class OrderFormController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param OrderFormsQueryBuilder $orderFormQueryBuilder
      * @return View
      */
-    public function index(): View
+    public function index(OrderFormsQueryBuilder $orderFormQueryBuilder): View
     {
-        return \view('admin.orderForm.index');
+        return \view('admin.orderForm.index', [
+            'orderFormList' => $orderFormQueryBuilder->getOrderFormWithPagination(),
+        ]);
     }
 
     /**
@@ -47,9 +51,41 @@ class OrderFormController extends Controller
             'criteria' => 'required',
         ]);
 
-        $data = $request->only(['user', 'phone', 'email', 'criteria']);
-        $order = OrderForm::create($data);
+        $orderForm = new OrderForm($request->except('_token'));
 
-        return redirect()->route('admin.order.index');
+        if ($orderForm->save()){
+            return \redirect()->route('admin.orderForm.index')->with('success', 'Order updated successfully');
+        }
+
+        return \back()->with('error', 'Failed to save record');
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param OrderForm $orderForm
+     * @return View
+     */
+    public function edit(OrderForm $orderForm): View
+    {
+        return \view('admin.orderForm.edit', [
+            'orderForm' => $orderForm
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param Request $request
+     * @param OrderForm $orderForm
+     * @return RedirectResponse
+     */
+    public function update(Request $request, OrderForm $orderForm): RedirectResponse
+    {
+        $orderForm = $orderForm->fill($request->except('_token'));
+        if ($orderForm->save()) {
+            return \redirect()->route('admin.orderForm.index')->with('success', 'Order updated successfully');
+        }
+        return \back()->with('error', 'Failed to save record');
     }
 }
