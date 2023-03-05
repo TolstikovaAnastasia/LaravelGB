@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\OrderForm\CreateRequest;
+use App\Http\Requests\OrderForm\EditRequest;
 use App\Models\OrderForm;
 use App\QueryBuilders\OrderFormsQueryBuilder;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 
 class OrderFormController extends Controller
 {
@@ -39,25 +41,18 @@ class OrderFormController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  Request  $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @param CreateRequest $request
+     * @return RedirectResponse
      */
-    public function store(Request $request): RedirectResponse
+    public function store(CreateRequest $request): RedirectResponse
     {
-        $request->validate([
-            'user' => 'required',
-            'phone' => 'required',
-            'email' => 'required',
-            'criteria' => 'required',
-        ]);
+        $orderForm = OrderForm::create($request->validated());
 
-        $orderForm = new OrderForm($request->except('_token'));
-
-        if ($orderForm->save()){
-            return \redirect()->route('admin.orderForm.index')->with('success', 'Order updated successfully');
+        if ($orderForm->save()) {
+            return \redirect()->route('admin.orderForm.index')->with('success', __('messages.admin.orderForm.success'));
         }
 
-        return \back()->with('error', 'Failed to save record');
+        return \back()->with('error', __('messages.admin.orderForm.fail'));
     }
 
     /**
@@ -69,23 +64,42 @@ class OrderFormController extends Controller
     public function edit(OrderForm $orderForm): View
     {
         return \view('admin.orderForm.edit', [
-            'orderForm' => $orderForm
+            'orderForm' => $orderForm,
         ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
+     * @param EditRequest $request
      * @param OrderForm $orderForm
      * @return RedirectResponse
      */
-    public function update(Request $request, OrderForm $orderForm): RedirectResponse
+    public function update(EditRequest $request, OrderForm $orderForm): RedirectResponse
     {
-        $orderForm = $orderForm->fill($request->except('_token'));
+        $orderForm = $orderForm->fill($request->validated());
         if ($orderForm->save()) {
-            return \redirect()->route('admin.orderForm.index')->with('success', 'Order updated successfully');
+            return \redirect()->route('admin.orderForm.index')->with('success', __('messages.admin.orderForm.update'));
         }
-        return \back()->with('error', 'Failed to save record');
+        return \back()->with('error', __('messages.admin.orderForm.fail'));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param OrderForm $category
+     * @return JsonResponse
+     */
+    public function destroy(OrderForm $orderForm): JsonResponse
+    {
+        try {
+            $orderForm->delete();
+
+            return \response()->json('ok');
+
+        } catch (\Exception $exception) {
+            \Log::error($exception->getMessage(), [$exception]);
+            return \response()->json('error', 400);
+        }
     }
 }

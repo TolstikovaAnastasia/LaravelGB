@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Feedback\CreateRequest;
 use App\Models\Feedback;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 
 class FeedbackController extends Controller
@@ -35,19 +35,23 @@ class FeedbackController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  Request  $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @param CreateRequest $request
+     * @return JsonResponse
      */
-    public function store(Request $request): RedirectResponse
+    public function store(CreateRequest $request): JsonResponse
     {
-        $request->validate([
-            'user' => 'required',
-            'feedback' => 'required',
-        ]);
+        $validator = Feedback::create($request->validated());
 
-        $data = $request->only(['user', 'feedback']);
+        if ($validator->fails()) {
+            \Log::debug($validator->errors()->first());
+            return \response()->json(['success'=> false]);
+        }
 
-        $feedback = Feedback::create($data);
-        return redirect()->route('admin.feedback.index');
+        $data_string = "*********\nUSER: $request->user
+                                 \nDESCRIPTION: $request->feedback
+                                 \n*******\n";
+        $file = file_put_contents('feedback/log_feedback.txt', $data_string, FILE_APPEND);
+
+        return \response()->json(['success'=> true]);
     }
 }

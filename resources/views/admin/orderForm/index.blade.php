@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 @section('content')
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-        <h1 class="h2">Order Form</h1>
+        <h1 class="h2">Выгрузка данных</h1>
         <div class="btn-toolbar mb-2 mb-md-0"></div>
     </div>
 
@@ -10,12 +10,12 @@
             <thead>
             <tr>
                 <th>#ID</th>
-                <th>User Name</th>
-                <th>Phone number</th>
-                <th>E-mail</th>
-                <th>Criteria of search</th>
-                <th>Date updated</th>
-                <th>Actions</th>
+                <th>ФИО пользователя</th>
+                <th>Номер телефона</th>
+                <th>Электронный адрес</th>
+                <th>Критерии выгрузки данных</th>
+                <th>Дата обновления</th>
+                <th>Действия</th>
             </tr>
             </thead>
             <tbody>
@@ -27,11 +27,13 @@
                     <td>{{ $orderForm->email }}</td>
                     <td>{{ $orderForm->criteria }}</td>
                     <td>{{ $orderForm->created_at }}</td>
-                    <td><a href="{{ route('admin.orderForm.edit', ['orderForm' => $orderForm]) }}">Change</a> &nbsp; <a href="" style="color: red;">Delete</a></td>
+                    <td>
+                        <a href="{{ route('admin.orderForm.edit', ['orderForm' => $orderForm]) }}">Изменить</a> &nbsp;
+                        <a href="javascript:;" class="delete" rel="{{ $orderForm->id }}" style="color: red;">Удалить</a>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="7">No entries</td>
+                    <td colspan="7">Нет записей</td>
                 </tr>
             @endforelse
             </tbody>
@@ -40,4 +42,37 @@
         {{ $orderFormList->links() }}
     </div>
 @endsection
+
+@push('js')
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            let elements = document.querySelectorAll(".delete");
+            elements.forEach(function (e, k) {
+                e.addEventListener("click", function() {
+                    const id = this.getAttribute('rel');
+                    if (confirm(`Подтверждение удаление записи с #ID = ${id}`)) {
+                        send(`/admin/orderForm/${id}`).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        alert("Удаление отменено");
+                    }
+                });
+            });
+        });
+
+        async function send(url) {
+            let response = await fetch(url,  {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            });
+
+            let result = await response.json();
+            return result.ok;
+        }
+
+    </script>
+@endpush
 

@@ -7,9 +7,9 @@
             </h3>
 
             <div class="blog-post">
-                <h2 class="blog-post-title">{{  $categories['categories_title'] }}</h2>
-                <p class="blog-post-meta">{{ $categories['categories_created_at'] }} by <a href="#">{{ $categories['categories_author'] }}</a></p>
-                {!! $categories['categories_description'] !!}
+                <h2 class="blog-post-title">{{  $category->title }}</h2>
+                <p class="blog-post-meta">{{ $category->created_at }} by <a href="#">{{ $category->author }}</a></p>
+                {!! $category->description !!}
             </div><!-- /.blog-post -->
         </div><!-- /.blog-main -->
 

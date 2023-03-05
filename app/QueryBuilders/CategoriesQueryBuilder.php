@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\QueryBuilders;
 
 use App\Models\Category;
+use App\Models\News;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -26,5 +27,10 @@ final class CategoriesQueryBuilder extends QueryBuilder
     public function getAll(): Collection
     {
         return Category::query()->get();
+    }
+
+    public function getCategoryById(int $id): Collection
+    {
+        return News::query()->where('id', $id)->get();
     }
 }

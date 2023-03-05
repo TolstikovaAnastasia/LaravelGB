@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DataSources\CreateRequest;
+use App\Http\Requests\DataSources\EditRequest;
 use App\Models\DataSource;
 use App\QueryBuilders\DataSourcesQueryBuilder;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class DataSourceController extends Controller
@@ -22,8 +24,6 @@ class DataSourceController extends Controller
      */
     public function index(DataSourcesQueryBuilder $dataSourcesQueryBuilder): View
     {
-        $model = new DataSource();
-
         return \view('admin.dataSource.index', [
             'dataSourceList' => $dataSourcesQueryBuilder->getAll()
         ]);
@@ -42,22 +42,18 @@ class DataSourceController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param CreateRequest $request
      * @return RedirectResponse
      */
-    public function store(Request $request): RedirectResponse
+    public function store(CreateRequest $request): RedirectResponse
     {
-        $request->validate([
-            'source' => 'required',
-        ]);
+        $category = DataSource::create($request->validated());
 
-        $dataSource = new DataSource($request->except('_token'));
-
-        if ($dataSource->save()){
-            return \redirect()->route('admin.dataSource.index')->with('success', 'Source updated successfully');
+        if ($category->save()) {
+            return \redirect()->route('admin.dataSource.index')->with('success', __('messages.admin.dataSource.success'));
         }
 
-        return \back()->with('error', 'Failed to save record');
+        return \back()->with('error', __('messages.admin.dataSource.fail'));
     }
 
     /**
@@ -87,27 +83,36 @@ class DataSourceController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
+     * @param EditRequest $request
      * @param DataSource $dataSource
      * @return RedirectResponse
      */
-    public function update(Request $request, DataSource $dataSource): RedirectResponse
+    public function update(EditRequest $request, DataSource $dataSource): RedirectResponse
     {
-        $dataSource = $dataSource->fill($request->except('_token'));
-        if ($dataSource->save()) {
-            return \redirect()->route('admin.dataSource.index')->with('success', 'Source updated successfully');
+        $dataSource = $dataSource->fill($request->validated());
+        if($dataSource->save()) {
+            return \redirect()->route('admin.dataSource.index')->with('success', __('messages.admin.dataSource.update'));
         }
-        return \back()->with('error', 'Failed to save record');
+
+        return \back()->with('error', __('messages.admin.dataSource.fail'));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
-     * @return Response
+     * @param DataSource $dataSource
+     * @return JsonResponse
      */
-    public function destroy($id)
+    public function destroy(DataSource $dataSource): JsonResponse
     {
-        //
+        try {
+            $dataSource->delete();
+
+            return \response()->json('ok');
+
+        } catch (\Exception $exception) {
+            \Log::error($exception->getMessage(), [$exception]);
+            return \response()->json('error', 400);
+        }
     }
 }

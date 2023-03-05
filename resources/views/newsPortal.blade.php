@@ -4,13 +4,13 @@
         <meta charset='utf-8'>
         <meta name='viewport' content='width=device-width, initial-scale=1'>
 
-        <title>News portal</title>
+        <title>Новостной портал</title>
     </head>
     <body>
         <div>
-            <h1>Welcome to our news portal!</h1>
-            <p>On our portal you will find the latest news on any topic.<br>
-                Go to the category you are interested in and choose the news you like.
+            <h1>Добро пожаловать на наш новостной портал!</h1>
+            <p>На нашем новостном портале вы найдете самые свежие новости на любые темы.<br>
+                Перейдите в интересующую вас категорию и выберите понравившуюся новость.
             </p>
         </div>
     </body>

@@ -36,6 +36,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], static function() {
     Route::resource('dataSource', AdminDataSourceController::class);
 });
 
+//news routes
 Route::group(['prefix' => ''], static function() {
     Route::get('/news', [NewsController::class, 'index'])
         ->name('news');
@@ -43,11 +44,9 @@ Route::group(['prefix' => ''], static function() {
     Route::get('/news/{news_id}/show', [NewsController::class, 'show'])
         ->where('news_id', '\d+')
         ->name('news.show');
-
-    Route::get('/categories/news/', [NewsController::class, 'index'])
-        ->name('category_id');
 });
 
+//categories routes
 Route::group(['prefix' => ''], static function() {
     Route::get('/categories', [CategoryController::class, 'index'])
         ->name('categories');
@@ -57,8 +56,3 @@ Route::group(['prefix' => ''], static function() {
         ->name('categories.show');
 });
 
-Route::get('collection', function () {
-    $names = ['Ann', 'Billy', 'Sam', 'Jhon', 'Andy', 'Feeby', 'Edd', 'Jil', 'Jeck', 'Freddy'];
-    $collect = \collect($names);
-    dd($collect->map(fn($item) => strtoupper($item)));
-});
